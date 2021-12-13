@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Installation</title>
+
+    <style>
+        .box {
+            background-color: purple;
+            height: 200px;
+            width: 200px;
+        }
+        .box.two {
+            background-color: red;
+        }
+        .box.three {
+            background-color: blue;
+        }
+        /* css for the v-cloak */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- runs the method mount with the div class of "test" -->
+    <!-- v-cloak hides the rendering of all the other vue directives -->
+    <div id="test" v-cloak>
+        <!-- bringing in variables created in the Vue.js method -->
+        {{ greetings }}
+
+        <!-- if I want to get an input from the textbox, we can use Vue -->
+        <input v-model="greetings" /> 
+
+        <!-- v-if acts like a if statement while the function is stated true/false -->
+        <hr />
+        <div v-if="isVisible" class="box"></div>
+        <!-- other examples of v-if include -->
+        <div v-else-if="isVisible2" class="box two"></div>
+        <div v-else class="box three"></div>
+        <!-- the v-if box is shown because we put our box2 setting to false meaning the first case is true, therefore showcase that one -->
+    </div>
+
+    <!-- installing Vue here -->
+    <script src="https://unpkg.com/vue@next"></script>
+
+    <!-- method to allow user to create objects -->
+    <script>
+        let app = Vue.createApp({
+            // creating a variable in this instance called the options object:
+            data: function() {
+                return {
+                    // put whatever variables you want:
+                    greetings: "hello tester Vue.js",
+                    isVisible: true,
+                    isVisible2: false,
+                }
+            }
+        })
+        // using mount method to mount the application to the html code:
+        app.mount("#test")
+    </script>
+
+</body>
+</html>
