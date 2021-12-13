@@ -1,0 +1,150 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .box {
+            background-color: purple;
+            height: 200px;
+            width: 200px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+        input {
+            margin: 10px;
+            display: block;
+        }
+    </style> 
+
+</head>
+<body>
+
+    <div id="test" v-cloak>
+        <!-- creating a component -->
+        <login-form />
+
+        <hr />
+
+        <button v-on:click="isVisible = !isVisible">
+            Toggle Show Box
+        </button>
+
+        <button @click="toggleBox">
+            Another Toggle Box Example
+        </button>
+
+        <div v-if="isVisible" class="box"></div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        let app = Vue.createApp({
+            data: function() {
+                return {
+                    greetings: "hello tester Vue.js",
+                    isVisible: false,
+                }
+            },
+            methods: {
+                toggleBox() {
+                    this.isVisible = !this.isVisible
+                },
+                greet() {
+                    console.log(this.greetings)
+                }
+            }
+        })
+        // defining a component which needs to go before the .mount but after the functions and events
+        app.component('login-form', {
+            template: 
+            // the {{ title }} is referencing the title form below
+            // @submit.prevent prevents the default
+            // v-bind binds the component from the child component of custom-input to the parent component of login-form
+            // v-for loop that will take in the object array of "inputs" with str in which then can be shown using {{ str }} 
+            // <p v-for="str in inputs" v-bind:key="str"> {{ str }} </p>
+            `
+                <h1> {{ title }} </h1>
+                <form @submit.prevent="handleSubmit">
+                    <custom-input 
+                        v-for="(input, i) in inputs" v-bind:key="i"
+                        v-model="input.value" v-bind:label="input.label" v-bind:type="input.type"
+                    /> 
+                    <button> Log In </button>
+                </form>
+            `,
+            // connecting one component to another:
+            component: ['custom-input'],
+            data() {
+                return {
+                    title: 'Login Test Form',
+                    // an array called inputs:
+                    inputs: [
+                        {
+                            label: 'Email',
+                            value: '',
+                            type: 'email'
+                        },
+                        {
+                            label: 'Password',
+                            value: '',
+                            type: 'password'
+                        }
+                    ]
+                }
+            },
+            methods: {
+                handleSubmit() {
+                    // to reference the email and password from data, we continue to use "this."
+                    console.log(this.inputs[0].value, this.inputs[1].value)
+                }
+            }
+        })
+        // creating another component:
+        app.component('custom-input', {
+            template: 
+            `
+                <label>
+                    {{ label }}
+                    <input v-bind:type="type" v-model="inputValue" />
+                </label>
+            `,
+            // we now need to pass in props:
+            // these props will be an array of all the information that is being passed from the parent to the child component
+            // by allowing the props to be an array, we are then allowed to have access to the {{ label }}
+            // the modelValue props comes from when we use v-model in our form
+            props: ['label', 'type', 'modelValue'],
+            // creating new object called computed
+            computed: {
+                // put values in here as keys:
+                inputValue: {
+                    // getter function that will get the value and then set it
+                    get() {
+                        // we can access the modelValue from props
+                        return this.modelValue
+                    },
+                    // pass in a new parameter called value (can be any name)
+                    set(value) {
+                        // set the variable using the #emit()
+                        // emit allows you to emit events that other components can listen to
+                        // update: event that is being emitted and the second varaiable (value) is what value is is the value that is being passed in
+                        this.$emit('update:modelValue', value)
+                    }
+                }
+            }
+            // linking inputValue model to v-model to the input we have in our label so that the input box is always updating whenever the user types something
+            // data() {
+            //     return {
+            //         inputValue: ''
+            //     }
+            // }
+        })
+
+        app.mount("#test")
+    </script>
+
+</body>
+</html>

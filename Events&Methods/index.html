@@ -1,0 +1,72 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .box {
+            background-color: purple;
+            height: 200px;
+            width: 200px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style> 
+
+</head>
+<body>
+
+    <div id="test" v-cloak>
+        {{ greetings }}
+        <!-- adding another event to the input -->
+        <!-- the keyup.enter event will listen for a key press of "enter" -->
+        <!-- to pass something into the event listener of "greet", simply add parenthesis: "greet()" -->
+        <input @keyup.enter="greet" v-model="greetings" />
+
+        <hr />
+
+        <!-- adding button to control the v-if statement showing the box color-->
+        <!-- v-on is for events -->
+        <!-- we can set the on-click event to the opposite so it triggers on click to both show and turn off -->
+        <!-- instead of typing "v-on:click", we can simply use "@click" but this only applies to events-->
+        <button v-on:click="isVisible = !isVisible">
+            Toggle Show Box
+        </button>
+
+        <!-- another way of implementing a box on-click event -->
+        <button @click="toggleBox">
+            Another Toggle Box Example
+        </button>
+
+        <div v-if="isVisible" class="box"></div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        let app = Vue.createApp({
+            data: function() {
+                return {
+                    greetings: "hello tester Vue.js",
+                    isVisible: false,
+                }
+            },
+            // creating another key:
+            methods: {
+                // methods is an object of functions
+                toggleBox() {
+                    // if we want to refer back to the "isVisible" function from the data method, we use "this" 
+                    this.isVisible = !this.isVisible
+                },
+                greet() {
+                    console.log(this.greetings)
+                }
+            }
+        })
+        app.mount("#test")
+    </script>
+
+</body>
+</html>
